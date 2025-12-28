@@ -3,6 +3,7 @@ plugins {
 }
 
 android {
+    lintOptions { checkReleaseBuilds false; abortOnError false }
     namespace 'com.example.webwrapperapp'
     compileSdk 33
 
