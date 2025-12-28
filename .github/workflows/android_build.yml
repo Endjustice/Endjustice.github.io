@@ -41,6 +41,7 @@ jobs:
         with:
           tag_name: build-${{ github.run_number }}
           name: Release ${{ github.run_number }}
+          # استفاده از مسیر مستقیم به جای متغیرهای قدیمی خروجی
           files: app/build/outputs/apk/release/*.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

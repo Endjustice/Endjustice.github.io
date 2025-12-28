@@ -16,6 +16,7 @@ public class MainActivity extends AppCompatActivity {
         webView = findViewById(R.id.webView);
         webView.setWebViewClient(new WebViewClient());
         webView.getSettings().setJavaScriptEnabled(true);
-        webView.loadUrl("https://www.google.com");
+        // آدرس سایت شما جایگزین شد
+        webView.loadUrl("https://myai.kronos666.workers.dev/");
     }
 }
