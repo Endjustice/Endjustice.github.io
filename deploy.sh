@@ -1,23 +1,9 @@
 #!/data/data/com.termux/files/usr/bin/bash
 
-echo "🔍 شروع عملیات نهایی..."
+# انتقال آیکون
+cp /storage/emulated/0/pictures/ic_launcher.png app/src/main/res/mipmap-mdpi/ic_launcher.png 2>/dev/null
 
-# ۱. کپی آیکون از مسیر گوشی
-SOURCE_ICON="/storage/emulated/0/pictures/ic_launcher.png"
-DEST_DIR="app/src/main/res/mipmap-mdpi"
-if [ -f "$SOURCE_ICON" ]; then
-    mkdir -p "$DEST_DIR"
-    cp "$SOURCE_ICON" "$DEST_DIR/ic_launcher.png"
-    echo "✅ آیکون با موفقیت جایگزین شد."
-else
-    echo "❌ خطا: فایل آیکون پیدا نشد."
-    exit 1
-fi
-
-# ۲. تنظیم مانیفست
-sed -i 's/android:icon="[^"]*"/android:icon="@mipmap\/ic_launcher"/g' app/src/main/AndroidManifest.xml
-
-# ۳. ایجاد فایل YAML با متغیرهای اصلاح شده (حروف بزرگ و بدون آندرلاین)
+# ساخت فایل YAML با نام متغیرهای صحیح
 mkdir -p .github/workflows
 cat <<EOF > .github/workflows/android_build.yml
 name: Android CI/CD for Endjustice
@@ -61,8 +47,7 @@ jobs:
           GITHUB_TOKEN: \${{ secrets.GITHUB_TOKEN }}
 EOF
 
-# ۴. ارسال به گیت‌هاب
 git add .
-git commit -m "Fix: Corrected secret variable names for signing"
+git commit -m "Final attempt: Correct Secrets and Key"
 git push origin main --force
 
