@@ -1,10 +1,6 @@
-#!/data/data/com.termux/files/usr/bin/bash
+# ... (بخش‌های قبلی اسکریپت مثل کپی آیکون و مانیفست ثابت بماند) ...
 
-# انتقال آیکون
-cp /storage/emulated/0/pictures/ic_launcher.png app/src/main/res/mipmap-mdpi/ic_launcher.png 2>/dev/null
-
-# ساخت فایل YAML با نام متغیرهای صحیح
-mkdir -p .github/workflows
+# ۳. اصلاح فایل YAML برای خروجی تمیز و تک‌فایل
 cat <<EOF > .github/workflows/android_build.yml
 name: Android CI/CD for Endjustice
 on:
@@ -26,6 +22,7 @@ jobs:
         run: chmod +x gradlew
       - name: Build Release APK
         run: ./gradlew assembleRelease
+
       - name: Sign APK
         uses: r0adkll/sign-android-release@v1
         id: sign_app
@@ -37,17 +34,24 @@ jobs:
           keyPassword: \${{ secrets.KEY_PASSWORD }}
         env:
           BUILD_TOOLS_VERSION: "33.0.1"
+
+      # مرحله جدید: تغییر نام فایل امضا شده برای پاکسازی خروجی
+      - name: Rename Final APK
+        run: mv \${{ steps.sign_app.outputs.signedReleaseFile }} app/build/outputs/apk/release/MISTAKE619-Pro.apk
+
       - name: Upload to GitHub Releases
         uses: softprops/action-gh-release@v1
         with:
           tag_name: build-\${{ github.run_number }}
           name: Release \${{ github.run_number }}
-          files: app/build/outputs/apk/release/*.apk
+          # فقط فایل تغییر نام داده شده را آپلود کن
+          files: app/build/outputs/apk/release/MISTAKE619-Pro.apk
         env:
           GITHUB_TOKEN: \${{ secrets.GITHUB_TOKEN }}
 EOF
 
+# ۴. ارسال به گیت‌هاب
 git add .
-git commit -m "Final attempt: Correct Secrets and Key"
+git commit -m "Cleanup: Single Signed APK Output"
 git push origin main --force
 

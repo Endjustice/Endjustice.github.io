@@ -18,6 +18,7 @@ jobs:
         run: chmod +x gradlew
       - name: Build Release APK
         run: ./gradlew assembleRelease
+
       - name: Sign APK
         uses: r0adkll/sign-android-release@v1
         id: sign_app
@@ -29,11 +30,17 @@ jobs:
           keyPassword: ${{ secrets.KEY_PASSWORD }}
         env:
           BUILD_TOOLS_VERSION: "33.0.1"
+
+      # مرحله جدید: تغییر نام فایل امضا شده برای پاکسازی خروجی
+      - name: Rename Final APK
+        run: mv ${{ steps.sign_app.outputs.signedReleaseFile }} app/build/outputs/apk/release/MISTAKE619-Pro.apk
+
       - name: Upload to GitHub Releases
         uses: softprops/action-gh-release@v1
         with:
           tag_name: build-${{ github.run_number }}
           name: Release ${{ github.run_number }}
-          files: app/build/outputs/apk/release/*.apk
+          # فقط فایل تغییر نام داده شده را آپلود کن
+          files: app/build/outputs/apk/release/MISTAKE619-Pro.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
