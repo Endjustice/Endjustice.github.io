@@ -1,28 +1,23 @@
 #!/data/data/com.termux/files/usr/bin/bash
 
-echo "🔍 شروع عملیات با آیکون جدید..."
+echo "🔍 شروع عملیات نهایی..."
 
-# دسترسی به حافظه گوشی اگر قبلاً داده نشده
-termux-setup-storage -y 2>/dev/null
-
-# ۱. کپی دقیق آیکون از مسیری که گفتی
+# ۱. کپی آیکون از مسیر گوشی
 SOURCE_ICON="/storage/emulated/0/pictures/ic_launcher.png"
 DEST_DIR="app/src/main/res/mipmap-mdpi"
-
 if [ -f "$SOURCE_ICON" ]; then
     mkdir -p "$DEST_DIR"
     cp "$SOURCE_ICON" "$DEST_DIR/ic_launcher.png"
-    echo "✅ آیکون جدید از Pictures با موفقیت جایگزین شد."
+    echo "✅ آیکون با موفقیت جایگزین شد."
 else
-    echo "❌ خطا: فایل در مسیر $SOURCE_ICON یافت نشد!"
+    echo "❌ خطا: فایل آیکون پیدا نشد."
     exit 1
 fi
 
-# ۲. اطمینان از تنظیم بودن مانیفست
-MANIFEST="app/src/main/AndroidManifest.xml"
-sed -i 's/android:icon="[^"]*"/android:icon="@mipmap\/ic_launcher"/g' "$MANIFEST"
+# ۲. تنظیم مانیفست
+sed -i 's/android:icon="[^"]*"/android:icon="@mipmap\/ic_launcher"/g' app/src/main/AndroidManifest.xml
 
-# ۳. ایجاد فایل تنظیمات بیلد (YAML) - بدون تغییر نسبت به قبل
+# ۳. ایجاد فایل YAML با متغیرهای اصلاح شده (حروف بزرگ و بدون آندرلاین)
 mkdir -p .github/workflows
 cat <<EOF > .github/workflows/android_build.yml
 name: Android CI/CD for Endjustice
@@ -52,8 +47,8 @@ jobs:
           releaseDirectory: app/build/outputs/apk/release
           signingKeyBase64: \${{ secrets.SIGNING_KEY }}
           alias: \${{ secrets.ALIAS }}
-          key_store_password: \${{ secrets.KEY_STORE_PASSWORD }}
-          key_password: \${{ secrets.KEY_PASSWORD }}
+          keyStorePassword: \${{ secrets.KEY_STORE_PASSWORD }}
+          keyPassword: \${{ secrets.KEY_PASSWORD }}
         env:
           BUILD_TOOLS_VERSION: "33.0.1"
       - name: Upload to GitHub Releases
@@ -68,6 +63,6 @@ EOF
 
 # ۴. ارسال به گیت‌هاب
 git add .
-git commit -m "Fix: New icon from Pictures folder"
+git commit -m "Fix: Corrected secret variable names for signing"
 git push origin main --force
 
