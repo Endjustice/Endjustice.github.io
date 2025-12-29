@@ -8,20 +8,16 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-
       - name: Set up Java 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
           cache: gradle
-
       - name: Grant Execute Permission
         run: chmod +x gradlew
-
       - name: Build Release APK
         run: ./gradlew assembleRelease
-
       - name: Sign APK
         uses: r0adkll/sign-android-release@v1
         id: sign_app
@@ -33,11 +29,8 @@ jobs:
           keyPassword: ${{ secrets.KEY_PASSWORD }}
         env:
           BUILD_TOOLS_VERSION: "33.0.1"
-
       - name: Rename and Cleanup
-        run: |
-          mv ${{ steps.sign_app.outputs.signedReleaseFile }} app/build/outputs/apk/release/MISTAKE619-Pro.apk
-
+        run: mv ${{ steps.sign_app.outputs.signedReleaseFile }} app/build/outputs/apk/release/MISTAKE619-Pro.apk
       - name: Upload to GitHub Releases
         uses: softprops/action-gh-release@v1
         with:
