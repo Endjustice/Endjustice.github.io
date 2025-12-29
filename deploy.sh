@@ -1,24 +1,19 @@
 #!/data/data/com.termux/files/usr/bin/bash
 
-echo "🔍 در حال بررسی ساختار پروژه..."
+echo "🔍 شروع عملیات استقرار (Deploy)..."
 
-# ۱. بررسی پوشه تنظیمات گیت‌هاب
-if [ ! -d ".github/workflows" ]; then
-    mkdir -p .github/workflows
-    echo "✅ پوشه workflows ساخته شد."
+# ۱. انتقال و اطمینان از وجود آیکون
+if [ -f "ic_launcher.png" ]; then
+    mkdir -p app/src/main/res/mipmap-mdpi
+    cp ic_launcher.png app/src/main/res/mipmap-mdpi/ic_launcher.png
+    echo "✅ آیکون ic_launcher.png به پوشه منابع منتقل شد."
+else
+    echo "⚠️ هشدار: فایل ic_launcher.png در پوشه اصلی یافت نشد."
 fi
 
-# ۲. اطمینان از وجود فایل اجرایی gradlew
-if [ ! -f "gradlew" ]; then
-    echo "⚠️ فایل gradlew یافت نشد. در حال ساخت فایل جایگزین..."
-    printf "#!/usr/bin/env bash\n./gradlew \"\$@\"" > gradlew
-    chmod +x gradlew
-fi
-
-# ۳. بررسی فایل تنظیمات بیلد (YAML)
-if [ ! -f ".github/workflows/android_build.yml" ]; then
-    echo "⚠️ فایل android_build.yml یافت نشد. در حال ایجاد..."
-    cat <<EOF > .github/workflows/android_build.yml
+# ۲. ایجاد فایل تنظیمات بیلد (با اصلاحات نهایی)
+mkdir -p .github/workflows
+cat <<EOF > .github/workflows/android_build.yml
 name: Android CI/CD for Endjustice
 
 on:
@@ -54,31 +49,24 @@ jobs:
           alias: \${{ secrets.ALIAS }}
           keyStorePassword: \${{ secrets.KEY_STORE_PASSWORD }}
           keyPassword: \${{ secrets.KEY_PASSWORD }}
+        env:
+          BUILD_TOOLS_VERSION: "33.0.1"
 
       - name: Upload to GitHub Releases
         uses: softprops/action-gh-release@v1
         with:
           tag_name: build-\${{ github.run_number }}
           name: Release \${{ github.run_number }}
-          files: \${{ steps.sign_app.outputs.signedReleaseFile }}
+          files: app/build/outputs/apk/release/*.apk
         env:
           GITHUB_TOKEN: \${{ secrets.GITHUB_TOKEN }}
 EOF
-    echo "✅ فایل تنظیمات بیلد با موفقیت ایجاد شد."
-fi
+echo "✅ فایل android_build.yml بروزرسانی شد."
 
-# ۴. عملیات گیت
-echo "🚀 در حال آماده‌سازی برای ارسال به گیت‌هاب..."
-git init 2>/dev/null
-git remote add origin https://github.com/Endjustice/Endjustice.github.io.git 2>/dev/null
-
-# هماهنگ‌سازی اجباری با سرور (Force Sync)
-echo "📥 در حال هماهنگ‌سازی با سرور..."
+# ۳. عملیات گیت
 git add .
-git commit -m "Final check and deploy" 2>/dev/null
+git commit -m "Final build: Icon and YAML version fix" 2>/dev/null
 git branch -M main
-
-echo "📤 در حال Push کردن (لطفاً Username و Token خود را وارد کنید)..."
+echo "📤 در حال ارسال به گیت‌هاب..."
 git push -u origin main --force
 
-echo "✨ تمام شد! حالا به تب Actions در گیت‌هاب بروید."
