@@ -1,5 +1,7 @@
 package com.example.webwrapperapp2;
 
+import com.example.webwrapperapp2.R;
+
 import android.os.Bundle;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
