@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace 'com.example.webwrapperapp'
+    namespace 'com.example.webwrapperapp2'
     compileSdk 33
 
     defaultConfig {
