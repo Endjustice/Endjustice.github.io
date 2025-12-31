@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
         webSettings.setDatabaseEnabled(true);
         webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
         
-        webView.loadUrl("https://myai.kronos666.workers.dev/");
+        webView.loadUrl("https://image.kronos666.workers.dev/");
     }
 
     @Override
