@@ -1,4 +1,4 @@
-package com.example.webwrapperapp;
+package com.example.webwrapperapp2;
 
 import android.os.Bundle;
 import android.webkit.WebSettings;

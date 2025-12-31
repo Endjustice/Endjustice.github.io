@@ -7,7 +7,7 @@ android {
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.example.webwrapperapp"
+        applicationId "com.example.webwrapperapp2"
         minSdk 24
         targetSdk 33
         versionCode 2
